@@ -1,38 +1,38 @@
-// Streamlined and optimized UnlaceApp.java
-import java.io.*;
-import java.util.*;
-import java.time.*;
-import java.time.format.*;
-import java.util.function.*;
-import java.util.stream.*;
+    // Streamlined and optimized UnlaceApp.java
+    import java.io.*;
+    import java.util.*;
+    import java.time.*;
+    import java.time.format.*;
+    import java.util.function.*;
+    import java.util.stream.*;
 
-public class UnlaceApp { // Main class for the Unlace shoe inventory system
-    private static final String DATA_FILE = "store_data.ser"; // File name to store inventory and sales data
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy"); // Formatter for short date
-    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm"); // Formatter for full date and time
-    private static final int MAX_PRICE = 10000; // Maximum allowed price for a shoe
-    private static final int MAX_QUANTITY = 1000; // Maximum allowed quantity for stock
+    public class UnlaceApp { // Main class for the Unlace shoe inventory system
+        private static final String DATA_FILE = "store_data.ser"; // File name to store inventory and sales data
+        private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy"); // Formatter for short date
+        private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm"); // Formatter for full date and time
+        private static final int MAX_PRICE = 10000; // Maximum allowed price for a shoe
+        private static final int MAX_QUANTITY = 1000; // Maximum allowed quantity for stock
 
-static class User implements Serializable { // Represents a user who logs in
+    static class User implements Serializable { // Represents a user who logs in
         final String username; // User's name
         final String email; // User's email address
         final LocalDateTime loginTime; // Timestamp when the user logged in
 
-public User(String username, String email) { // Constructor to set name, email, and login time
+        public User(String username, String email) { // Constructor to set name, email, and login time
             this.username = username; // Set the user's name
             this.email = email; // Set the user's email
             this.loginTime = LocalDateTime.now(); // Capture current time as login time
         }
     }
 
- static abstract class Record implements Serializable { // Abstract base class for shared record fields
+    static abstract class Record implements Serializable { // Abstract base class for shared record fields
         private static int nextId = 1; // Static counter to assign unique IDs
         final int id; // Unique ID for each record
         String name; // Name of the shoe or sale item
         int quantity; // Number of items in stock or sold
         final LocalDateTime dateAdded; // When the record was created
 
- public Record(String name, int quantity) { // Constructor for shared fields
+        public Record(String name, int quantity) { // Constructor for shared fields
             this.id = nextId++; // Assign and increment the record ID
             this.name = name; // Set name
             this.quantity = quantity; // Set quantity
@@ -40,14 +40,14 @@ public User(String username, String email) { // Constructor to set name, email, 
         }
     }
 
-public static class ShoeItem extends Record { // Subclass representing a shoe in the inventory
+    public static class ShoeItem extends Record { // Subclass representing a shoe in the inventory
         double price; // Price of the shoe
         String description; // Optional description of the shoe
         String seller; // Seller of the shoe
         String category; // Category of the shoe (e.g., Running, Formal)
         String size; // Size of the shoe
 
-public ShoeItem(String name, double price, int quantity, String seller, String category, String size) { // Constructor for ShoeItem
+        public ShoeItem(String name, double price, int quantity, String seller, String category, String size) { // Constructor for ShoeItem
             super(name, quantity); // Call to base Record constructor
             this.price = price;
             this.seller = seller;
@@ -56,26 +56,26 @@ public ShoeItem(String name, double price, int quantity, String seller, String c
             this.description = ""; // Initialize empty description
         }
 
-@Override
+        @Override
         public String toString() { // Print details of the sale in a formatted way // Print details of the shoe in a formatted way
             return String.format("ID: %d | %s - Size: %s - $%.2f - Qty: %d - Category: %s - Seller: %s - Added: %s",
                     id, name, size, price, quantity, category, seller, dateAdded.format(DATE_FORMAT));
         }
     }
 
-public static class SaleRecord extends Record { // Subclass representing a sale transaction
+    public static class SaleRecord extends Record { // Subclass representing a sale transaction
         final String buyerName; // Name of the buyer
         final double salePrice; // Price per item sold
 
-//Also inherits from Record, but represents a sale of a shoe.
+        //Also inherits from Record, but represents a sale of a shoe.
 
-public SaleRecord(String name, String buyerName, int quantity, double salePrice) { // Constructor for SaleRecord
+        public SaleRecord(String name, String buyerName, int quantity, double salePrice) { // Constructor for SaleRecord
             super(name, quantity);
             this.buyerName = buyerName;
             this.salePrice = salePrice;
         }
 
-@Override
+        @Override
         //Prints sales history in a clean format showing quantity, price, buyer, and total.
         public String toString() {
             return String.format("ID: %d | %s - Buyer: %s - Qty: %d @ $%.2f - Total: $%.2f - Date: %s",
@@ -85,21 +85,21 @@ public SaleRecord(String name, String buyerName, int quantity, double salePrice)
     }
 
 
-public static void main(String[] args) { // Entry point of the application,Prompts user for name/email and saves them as a User object.
+    public static void main(String[] args) { // Entry point of the application,Prompts user for name/email and saves them as a User object.
         Scanner input = new Scanner(System.in); // Read user input from console
         User currentUser = authenticateUser(input); // Prompt for name and email, create User object
 
-//Loads existing data from file store_data.ser, or starts empty if file not found.
+        //Loads existing data from file store_data.ser, or starts empty if file not found.
 
 
-ArrayList<ShoeItem> inventory = loadInventory(); // Load inventory from file
+        ArrayList<ShoeItem> inventory = loadInventory(); // Load inventory from file
         ArrayList<SaleRecord> sales = loadSales(); // Load sales data from file
 
- while (true) { // Main loop to display menu and handle commands
+        while (true) { // Main loop to display menu and handle commands
             displayMainMenu(currentUser); // Show the main menu
             String choice = input.nextLine().trim().toLowerCase(); // Read and normalize user input
 
- switch (choice) {
+            switch (choice) {
                 case "1", "view" -> showInventory(inventory); // View all inventory items
                 case "2", "add" -> addInventoryItem(inventory, input); // Add new shoe to inventory
                 case "3", "delete" -> deleteInventoryItem(inventory, input); // Remove a shoe from inventory
@@ -120,7 +120,7 @@ ArrayList<ShoeItem> inventory = loadInventory(); // Load inventory from file
         }
     }
 
-private static User authenticateUser(Scanner input) {
+    private static User authenticateUser(Scanner input) {
         System.out.println("=== Unlace Shoe Inventory System ===");
         String username = getValidInput(input, "Enter your name: ", "Name cannot be empty.", s -> !s.isEmpty());
         String email = getValidInput(input, "Enter your email: ", "Invalid email format.",
@@ -128,7 +128,7 @@ private static User authenticateUser(Scanner input) {
         return new User(username, email);
     }
 
-private static void displayMainMenu(User user) {
+    private static void displayMainMenu(User user) {
         System.out.println("=== Welcome to Unlace, " + user.username + " ===");
         System.out.println("Session started: " + user.loginTime.format(DATE_TIME_FORMAT));
         System.out.println("\nMain Menu:");
@@ -144,7 +144,7 @@ private static void displayMainMenu(User user) {
         System.out.print("Choose an option: ");
     }
 
-private static void showHelp() {
+    private static void showHelp() {
         System.out.println("\n=== Unlace Help ===");
         System.out.println("1/view   - Show current inventory");
         System.out.println("2/add    - Add new shoes to inventory");
@@ -157,7 +157,7 @@ private static void showHelp() {
         System.out.println("help     - Show this help message");
     }
 
-private static void generateReports(ArrayList<ShoeItem> inventory, ArrayList<SaleRecord> sales, Scanner input) {
+    private static void generateReports(ArrayList<ShoeItem> inventory, ArrayList<SaleRecord> sales, Scanner input) {
         System.out.println("\n--- Reports ---");
         System.out.println("1. Inventory Summary");
         System.out.println("2. Sales Summary");
@@ -165,7 +165,7 @@ private static void generateReports(ArrayList<ShoeItem> inventory, ArrayList<Sal
         System.out.println("4. Best Selling Items");
         System.out.print("Choose report: ");
 
-String option = input.nextLine();
+        String option = input.nextLine();
         switch (option) {
             case "1" -> generateInventoryReport(inventory);
             case "2" -> generateSalesReport(sales);
@@ -175,14 +175,14 @@ String option = input.nextLine();
         }
     }
 
-private static void cancelMessage() {
+    private static void cancelMessage() {
         System.out.println("Operation cancelled.");
     }
 
-// Inventory display, item addition, deletion, sale processing, sales history,
+    // Inventory display, item addition, deletion, sale processing, sales history,
 // searching, utility methods, input validation, data saving/loading methods follow:
 
-private static ArrayList<ShoeItem> loadInventory() { // Loads inventory list from file, or returns empty list if not found or error
+    private static ArrayList<ShoeItem> loadInventory() { // Loads inventory list from file, or returns empty list if not found or error
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(DATA_FILE))) {
             return (ArrayList<ShoeItem>) in.readObject();
         } catch (FileNotFoundException e) {
@@ -194,7 +194,7 @@ private static ArrayList<ShoeItem> loadInventory() { // Loads inventory list fro
         }
     }
 
- private static ArrayList<SaleRecord> loadSales() { // Loads sales list from file, skipping inventory object
+    private static ArrayList<SaleRecord> loadSales() { // Loads sales list from file, skipping inventory object
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(DATA_FILE))) {
             in.readObject(); // skip inventory
             return (ArrayList<SaleRecord>) in.readObject();
@@ -207,7 +207,7 @@ private static ArrayList<ShoeItem> loadInventory() { // Loads inventory list fro
         }
     }
 
-private static String getValidInput(Scanner input, String prompt, String errorMessage, Predicate<String> validator) { // Repeatedly prompts until valid input is received based on the provided rule
+    private static String getValidInput(Scanner input, String prompt, String errorMessage, Predicate<String> validator) { // Repeatedly prompts until valid input is received based on the provided rule
         while (true) {
             System.out.print(prompt);
             String value = input.nextLine().trim();
@@ -218,7 +218,7 @@ private static String getValidInput(Scanner input, String prompt, String errorMe
         }
     }
 
- private static int getValidInt(Scanner input, String prompt, int min, int max) { // Gets an integer within a valid range from user input
+    private static int getValidInt(Scanner input, String prompt, int min, int max) { // Gets an integer within a valid range from user input
         while (true) {
             System.out.print(prompt);
             try {
@@ -229,7 +229,7 @@ private static String getValidInput(Scanner input, String prompt, String errorMe
         }
     }
 
-private static double getValidDouble(Scanner input, String prompt, double min, double max) { // Gets a double within a valid range from user input
+    private static double getValidDouble(Scanner input, String prompt, double min, double max) { // Gets a double within a valid range from user input
         while (true) {
             System.out.print(prompt);
             try {
@@ -241,7 +241,7 @@ private static double getValidDouble(Scanner input, String prompt, double min, d
     }
 // --- Additional Methods ---
 
-private static void processSale(ArrayList<ShoeItem> inventory, ArrayList<SaleRecord> sales, Scanner input) { // Handles the process of selling a shoe and updating records
+    private static void processSale(ArrayList<ShoeItem> inventory, ArrayList<SaleRecord> sales, Scanner input) { // Handles the process of selling a shoe and updating records
         if (inventory.isEmpty()) {
             System.out.println("Inventory is empty - nothing to sell.");
             return;
@@ -266,7 +266,7 @@ private static void processSale(ArrayList<ShoeItem> inventory, ArrayList<SaleRec
         }
     }
 
-private static void showSalesHistory(ArrayList<SaleRecord> sales) { // Displays all recorded sales in history
+    private static void showSalesHistory(ArrayList<SaleRecord> sales) { // Displays all recorded sales in history
         if (sales.isEmpty()) {
             System.out.println("No sales yet.");
             return;
@@ -275,7 +275,7 @@ private static void showSalesHistory(ArrayList<SaleRecord> sales) { // Displays 
         sales.forEach(System.out::println);
     }
 
-private static void searchInventory(ArrayList<ShoeItem> inventory, Scanner input) { // Allows user to search inventory items by name keyword
+    private static void searchInventory(ArrayList<ShoeItem> inventory, Scanner input) { // Allows user to search inventory items by name keyword
         if (inventory.isEmpty()) {
             System.out.println("Inventory is empty.");
             return;
@@ -293,7 +293,7 @@ private static void searchInventory(ArrayList<ShoeItem> inventory, Scanner input
         }
     }
 
-private static void generateInventoryReport(ArrayList<ShoeItem> inventory) { // Generates a summary of inventory including count and total value
+    private static void generateInventoryReport(ArrayList<ShoeItem> inventory) { // Generates a summary of inventory including count and total value
         System.out.println("Inventory Summary");
         System.out.println("Total items: " + inventory.size());
         int totalQty = inventory.stream().mapToInt(item -> item.quantity).sum();
@@ -302,7 +302,7 @@ private static void generateInventoryReport(ArrayList<ShoeItem> inventory) { // 
         System.out.printf("Total value: $%.2f%n", value);
     }
 
-private static void generateSalesReport(ArrayList<SaleRecord> sales) { // Generates total number of sales, items sold, and revenue
+    private static void generateSalesReport(ArrayList<SaleRecord> sales) { // Generates total number of sales, items sold, and revenue
         System.out.println("Sales Summary");
         System.out.println("Total transactions: " + sales.size());
         int totalSold = sales.stream().mapToInt(s -> s.quantity).sum();
@@ -311,14 +311,14 @@ private static void generateSalesReport(ArrayList<SaleRecord> sales) { // Genera
         System.out.printf("Total revenue: $%.2f%n", revenue);
     }
 
- private static void generateLowStockReport(ArrayList<ShoeItem> inventory) { // Shows shoes with stock less than 5 units
+    private static void generateLowStockReport(ArrayList<ShoeItem> inventory) { // Shows shoes with stock less than 5 units
         System.out.println("Low Stock Items (<5):");
         inventory.stream()
                 .filter(i -> i.quantity < 5)
                 .forEach(i -> System.out.println(i.name + " (Qty: " + i.quantity + ")"));
     }
 
-private static void generateBestSellersReport(ArrayList<SaleRecord> sales) { // Shows top 5 best-selling shoe names by quantity sold
+    private static void generateBestSellersReport(ArrayList<SaleRecord> sales) { // Shows top 5 best-selling shoe names by quantity sold
         System.out.println("Top 5 Best Sellers:");
         sales.stream()
                 .collect(Collectors.groupingBy(s -> s.name, Collectors.summingInt(s -> s.quantity)))
@@ -328,7 +328,7 @@ private static void generateBestSellersReport(ArrayList<SaleRecord> sales) { // 
                 .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue() + " sold"));
     }
 
-private static void showInventory(ArrayList<ShoeItem> inventory) {
+    private static void showInventory(ArrayList<ShoeItem> inventory) {
         if (inventory.isEmpty()) {
             System.out.println("Inventory is empty.");
             return;
@@ -337,7 +337,7 @@ private static void showInventory(ArrayList<ShoeItem> inventory) {
         inventory.forEach(System.out::println);
     }
 
-private static void addInventoryItem(ArrayList<ShoeItem> inventory, Scanner input) {
+    private static void addInventoryItem(ArrayList<ShoeItem> inventory, Scanner input) {
         System.out.println("--- Add New Shoe ---");
         String name = getValidInput(input, "Enter shoe name: ", "Name cannot be empty.", s -> !s.isEmpty());
         double price = getValidDouble(input, "Enter price: ", 0.01, MAX_PRICE);
@@ -346,12 +346,12 @@ private static void addInventoryItem(ArrayList<ShoeItem> inventory, Scanner inpu
         String category = getValidInput(input, "Enter category: ", "Category cannot be empty.", s -> !s.isEmpty());
         String size = getValidInput(input, "Enter size: ", "Size cannot be empty.", s -> !s.isEmpty());
 
-ShoeItem item = new ShoeItem(name, price, quantity, seller, category, size);
+        ShoeItem item = new ShoeItem(name, price, quantity, seller, category, size);
         inventory.add(item);
         System.out.println("Shoe added: " + item);
     }
 
-private static void deleteInventoryItem(ArrayList<ShoeItem> inventory, Scanner input) {
+    private static void deleteInventoryItem(ArrayList<ShoeItem> inventory, Scanner input) {
         if (inventory.isEmpty()) {
             System.out.println("Inventory is empty.");
             return;
@@ -373,7 +373,7 @@ private static void deleteInventoryItem(ArrayList<ShoeItem> inventory, Scanner i
         }
     }
 
-private static void saveData(ArrayList<ShoeItem> inventory, ArrayList<SaleRecord> sales) {
+    private static void saveData(ArrayList<ShoeItem> inventory, ArrayList<SaleRecord> sales) {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(DATA_FILE))) {
             out.writeObject(inventory);
             out.writeObject(sales);
